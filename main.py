@@ -2,27 +2,29 @@ import numpy as np
 import matplotlib.pyplot as plt
 import random
 import math
-import time
+from matplotlib.animation import FuncAnimation
 
-n_iteration = 10000
+# Point Calculation
+n_iteration = 10000000
 start = 0
 step = 0.01
-stop = 2*math.pi + step
+stop = 2 * math.pi + step
 
 border = np.arange(start, stop, step)
 x_border = np.cos(border)
 y_border = np.sin(border)
 
-c_points = [math.pi* 1/2, math.pi * 7/6, math.pi * 11/6]
+c_points = [math.pi * 1/2, math.pi * 7/6, math.pi * 11/6]
 x_c_points = np.cos(c_points)
 y_c_points = np.sin(c_points)
 
-x_current_point = random.random() * 2 - 1
-y_current_point = random.random() * 2 - 1
+index = random.choice([0, 1, 2])
+
+x_current_point = x_c_points[index]
+y_current_point = y_c_points[index]
 
 x_points = list()
 y_points = list()
-figure, ax = plt.subplots(figsize=(10, 8))
 
 for _ in range(n_iteration):
 
@@ -39,27 +41,29 @@ for _ in range(n_iteration):
     x_current_point = x_mid_point
     y_current_point = y_mid_point
 
-ax.scatter(x_points, y_points)
+# Plotting
+
+
+def animation_function(i):
+
+    print(i + 1, f"/ {n_partition}")
+    s = i * plot_step
+    e = (i + 1) * plot_step
+    ax.scatter(x_points[s: e], y_points[s: e], s=1, color="b")
+
+
+plot_step = int(n_iteration / 200)
+n_partition = int(n_iteration / plot_step)
+
+fig, ax = plt.subplots(figsize=(6, 6))
+plt.style.use("seaborn-v0_8")
+animation = FuncAnimation(fig, animation_function,
+                          frames=range(n_partition),
+                          interval=1, repeat=False)
+
+ax.plot(x_c_points, y_c_points, "r.")
+ax.plot(x_border, y_border, "k-")
+ax.set_xlim(-1.02, 1.02)
+ax.set_ylim(-1.02, 1.02)
+
 plt.show()
-
-
-# ploting
-
-# x_plotting = list()
-# y_plotting = list()
-
-# plt.ion()
-# figure, ax = plt.subplots(figsize=(10, 8))
-# plot, = ax.plot(x_points, y_points)
-
-# ax.plot(x_c_points, y_c_points, "r.")
-# ax.plot(x_border, y_border, "k-")
-
-# for i in range(n_iteration):
-
-#     plot.set_xdata(x_points[0:i])
-#     plot.set_ydata(*y_points[0:i])
-
-#     figure.canvas.draw()
-#     figure.canvas.flush_events()
-#     time.sleep()
